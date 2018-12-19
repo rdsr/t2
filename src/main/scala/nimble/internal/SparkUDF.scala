@@ -16,7 +16,7 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
     with CodegenFallback {
 
   private val _evanFn = evalFn(_children)
-  private val _unWrapFn = Utils.unWrap(dataType)
+  private val _unWrapFn = Utils.unWrapFn(dataType)
 
   override def foldable: Boolean = _fn.foldable
 
@@ -40,7 +40,7 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
       case 1 =>
         val func = _fn.asInstanceOf[Any => Any]
         val child0 = children(0)
-        lazy val wrapFn0 = Utils.wrap(child0.dataType)
+        lazy val wrapFn0 = Utils.wrapFn(child0.dataType)
         (input: InternalRow) => {
           func(
             wrapFn0(child0.eval(input)))
@@ -50,8 +50,8 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
         val func = function.asInstanceOf[(Any, Any) => Any]
         val child0 = children(0)
         val child1 = children(1)
-        lazy val wrapFn0 = Utils.wrap(child0.dataType)
-        lazy val wrapFn1 = Utils.wrap(child1.dataType)
+        lazy val wrapFn0 = Utils.wrapFn(child0.dataType)
+        lazy val wrapFn1 = Utils.wrapFn(child1.dataType)
         (input: InternalRow) => {
           func(
             wrapFn0(child0.eval(input)),
@@ -63,9 +63,9 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
         val child0 = children(0)
         val child1 = children(1)
         val child2 = children(2)
-        lazy val wrapFn0 = Utils.wrap(child0.dataType)
-        lazy val wrapFn1 = Utils.wrap(child1.dataType)
-        lazy val wrapFn2 = Utils.wrap(child2.dataType)
+        lazy val wrapFn0 = Utils.wrapFn(child0.dataType)
+        lazy val wrapFn1 = Utils.wrapFn(child1.dataType)
+        lazy val wrapFn2 = Utils.wrapFn(child2.dataType)
         (input: InternalRow) => {
           func(
             wrapFn0(child0.eval(input)),
@@ -79,10 +79,10 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
         val child1 = children(1)
         val child2 = children(2)
         val child3 = children(3)
-        lazy val wrapFn0 = Utils.wrap(child0.dataType)
-        lazy val wrapFn1 = Utils.wrap(child1.dataType)
-        lazy val wrapFn2 = Utils.wrap(child2.dataType)
-        lazy val wrapFn3 = Utils.wrap(child3.dataType)
+        lazy val wrapFn0 = Utils.wrapFn(child0.dataType)
+        lazy val wrapFn1 = Utils.wrapFn(child1.dataType)
+        lazy val wrapFn2 = Utils.wrapFn(child2.dataType)
+        lazy val wrapFn3 = Utils.wrapFn(child3.dataType)
         (input: InternalRow) => {
           func(
             wrapFn0(child0.eval(input)),
@@ -99,11 +99,11 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
         val child3 = children(3)
         val child4 = children(4)
 
-        lazy val wrapFn0 = Utils.wrap(child0.dataType)
-        lazy val wrapFn1 = Utils.wrap(child1.dataType)
-        lazy val wrapFn2 = Utils.wrap(child2.dataType)
-        lazy val wrapFn3 = Utils.wrap(child3.dataType)
-        lazy val wrapFn4 = Utils.wrap(child4.dataType)
+        lazy val wrapFn0 = Utils.wrapFn(child0.dataType)
+        lazy val wrapFn1 = Utils.wrapFn(child1.dataType)
+        lazy val wrapFn2 = Utils.wrapFn(child2.dataType)
+        lazy val wrapFn3 = Utils.wrapFn(child3.dataType)
+        lazy val wrapFn4 = Utils.wrapFn(child4.dataType)
 
         (input: InternalRow) => {
           func(

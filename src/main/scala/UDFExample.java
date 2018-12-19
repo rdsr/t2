@@ -19,7 +19,7 @@ public class UDFExample<K,V> implements UDF1<Map<K, V>, V>, UDF {
   }
 
   @Override
-  public void dataType(List<DataType> args) {
+  public DataType dataType(List<DataType> inputArgs) {
   }
 
   @Override
