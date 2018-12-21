@@ -8,7 +8,7 @@ import org.apache.spark.sql.types._
 
 import scala.collection.mutable.ArrayBuffer
 
-case class SparkRecord(private val _structType: StructType, private val _data: InternalRow)
+class SparkRecord(private val _structType: StructType, private val _data: InternalRow = null)
   extends GenericRecord
     with SparkData {
 
@@ -49,7 +49,7 @@ case class SparkRecord(private val _structType: StructType, private val _data: I
     else InternalRow.fromSeq(_mutableBuffer)
   }
 
-  override def schema: DataType = _structType
+  override def dataType: DataType = _structType
 
   private def createMutableStruct() = {
     if (_data != null) ArrayBuffer[Any](_data.toSeq(_structType))

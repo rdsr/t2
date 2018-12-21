@@ -10,7 +10,7 @@ import org.apache.spark.sql.types.MapType
 
 import scala.collection.mutable.Map
 
-class SparkMap[K, V](private val _mapType: MapType, private val _data: MapData)
+class SparkMap[K, V](private val _mapType: MapType, private val _data: MapData = null)
   extends util.AbstractMap[K, V]
     with SparkData {
 

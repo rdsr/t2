@@ -5,7 +5,7 @@ import java.util
 import org.apache.spark.sql.types.DataType
 
 trait Schema {
-  def schema: DataType
+  def dataType: DataType
 }
 
 trait IndexedRecord extends Schema {
@@ -28,3 +28,9 @@ trait UDF {
 
   def dataType(args: util.List[DataType]): DataType
 }
+
+trait UDF1[-T,+F] extends (T => F) with UDF
+trait UDF2[-T1, -T2, +F] extends ((T1, T2) => F) with UDF
+trait UDF3[-T1, -T2, -T3, +F] extends ((T1, T2, T3) => F) with UDF
+trait UDF4[-T1, -T2, -T3, -T4, +F] extends ((T1, T2, T3, T4) => F) with UDF
+trait UDF5[-T1, -T2, -T3, -T4, -T5, +F] extends ((T1, T2, T3, T4, T5) => F) with UDF

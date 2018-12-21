@@ -15,7 +15,7 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
     with NonSQLExpression
     with CodegenFallback {
 
-  private val _evanFn = evalFn(_children)
+  private val _evalFn = evalFn(_children)
   private val _unWrapFn = Utils.unWrapFn(dataType)
 
   override def foldable: Boolean = _fn.foldable
@@ -23,7 +23,7 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
   override def nullable: Boolean = _fn.nullable
 
   override def eval(input: InternalRow): Any = {
-    val result = _evanFn(input)
+    val result = _evalFn(input)
     _unWrapFn(result)
   }
 

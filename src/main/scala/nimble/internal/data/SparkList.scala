@@ -9,7 +9,7 @@ import org.apache.spark.sql.types.ArrayType
 
 import scala.collection.mutable.ArrayBuffer
 
-class SparkList[T](private val _listType: ArrayType, private val _data: ArrayData)
+class SparkList[T](private val _listType: ArrayType, private val _data: ArrayData = null)
   extends util.AbstractList[T] with SparkData {
 
   private val _elementType = _listType.elementType
