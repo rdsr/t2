@@ -3,25 +3,24 @@ package nimble.internal.data
 import java.util
 import java.util.AbstractMap.SimpleEntry
 
-import nimble.internal.Utils
+import nimble.internal.DataTypeWrappers
 import nimble.internal.api.SparkData
 import org.apache.spark.sql.catalyst.util.{ArrayBasedMapData, MapData}
-import org.apache.spark.sql.types.MapType
+import org.apache.spark.sql.types.DataType
 
 import scala.collection.mutable.Map
 
-class SparkMap[K, V](private val _mapType: MapType, private val _data: MapData = null)
-  extends util.AbstractMap[K, V]
-    with SparkData {
+class SparkMap[K, V](private val _keyType: DataType,
+                     private val _valueType: DataType,
+                     private val _data: MapData = null
+                    ) extends util.AbstractMap[K, V] with SparkData {
 
-  private val _keyType = _mapType.keyType
-  private val _valueType = _mapType.valueType
   private var _mutableMap: Map[Any, Any] = if (_data == null) createMutableMap() else null
 
-  private val _wrapKeyFn = Utils.wrapFn(_keyType)
-  private val _wrapValFn = Utils.wrapFn(_valueType)
-  private val _unWrapKeyFn = Utils.unWrapFn(_keyType)
-  private val _unWrapValFn = Utils.unWrapFn(_valueType)
+  private val _wrapKeyFn = DataTypeWrappers.wrapFn(_keyType)
+  private val _wrapValFn = DataTypeWrappers.wrapFn(_valueType)
+  private val _unWrapKeyFn = DataTypeWrappers.unwrapFn(_keyType)
+  private val _unWrapValFn = DataTypeWrappers.unwrapFn(_valueType)
 
 
   override def put(key: K, value: V): V = {
@@ -53,8 +52,7 @@ class SparkMap[K, V](private val _mapType: MapType, private val _data: MapData =
     r
   }
 
-  override def underlyingData: Any =
-    ArrayBasedMapData(_mutableMap, identity, identity)
+  override def underlyingData: Any = ArrayBasedMapData(_mutableMap)
 
   private def createMutableMap(): Map[Any, Any] = {
     val m = Map.empty[Any, Any]

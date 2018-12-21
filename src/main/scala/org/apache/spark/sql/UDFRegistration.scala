@@ -10,6 +10,8 @@ object UDFRegistration {
     sparkSession
       .sessionState
       .functionRegistry
-      .registerFunction(FunctionIdentifier(fn.name), (children: Seq[Expression]) => SparkUDF(fn, children))
+      .registerFunction(
+        FunctionIdentifier(fn.name),
+        (children: Seq[Expression]) => SparkUDF(fn, children))
   }
 }

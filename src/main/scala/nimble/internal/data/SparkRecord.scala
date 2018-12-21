@@ -1,21 +1,21 @@
 package nimble.internal.data
 
 import nimble.api.GenericRecord
-import nimble.internal.Utils
+import nimble.internal.DataTypeWrappers
 import nimble.internal.api.SparkData
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.types._
 
 import scala.collection.mutable.ArrayBuffer
 
-class SparkRecord(private val _structType: StructType, private val _data: InternalRow = null)
+case class SparkRecord(private val _structType: StructType, private val _data: InternalRow = null)
   extends GenericRecord
     with SparkData {
 
   private var _mutableBuffer = if (_data == null) createMutableStruct() else null
 
-  private val _wrapFns = _structType.fields.map(f => Utils.wrapFn(f.dataType))
-  private val _unWrapFns = _structType.fields.map(f => Utils.unWrapFn(f.dataType))
+  private val _wrapFns = _structType.fields.map(f => DataTypeWrappers.wrapFn(f.dataType))
+  private val _unwrapFns = _structType.fields.map(f => DataTypeWrappers.unwrapFn(f.dataType))
   private val _updateFns = _structType.fields.map(f => updateFn(f.dataType))
 
   /** Set the value of a field given its name. */
@@ -40,7 +40,7 @@ class SparkRecord(private val _structType: StructType, private val _data: Intern
       if (_mutableBuffer == null)
         _data.get(i, f.dataType)
       else
-        _unWrapFns(i)(_mutableBuffer(i))
+        _wrapFns(i)(_mutableBuffer(i))
     r.asInstanceOf[V]
   }
 
@@ -49,27 +49,30 @@ class SparkRecord(private val _structType: StructType, private val _data: Intern
     else InternalRow.fromSeq(_mutableBuffer)
   }
 
-  override def dataType: DataType = _structType
-
   private def createMutableStruct() = {
     if (_data != null) ArrayBuffer[Any](_data.toSeq(_structType))
-    else new ArrayBuffer[Any](_structType.size)
+    else ArrayBuffer.fill[Any](_structType.size)(null)
   }
 
   private def updateFn(dataType: DataType): (Int, Any) => Unit = {
-    dataType match {
-      case BooleanType
-           | ByteType
-           | ShortType
-           | IntegerType
-           | LongType
-           | FloatType
-           | DoubleType
-      => (i, v) => _data.update(i, v)
-      case _ => (i, v) => {
-        if (_mutableBuffer == null)
-          _mutableBuffer = createMutableStruct()
-        _mutableBuffer(i) = _wrapFns(i)(v)
+    val defaultUpdate = (i: Int, v: Any) => {
+      if (_mutableBuffer == null)
+        _mutableBuffer = createMutableStruct()
+      _mutableBuffer(i) = _unwrapFns(i)(v)
+    }
+    if (_data == null)
+      defaultUpdate
+    else {
+      dataType match {
+        case BooleanType
+             | ByteType
+             | ShortType
+             | IntegerType
+             | LongType
+             | FloatType
+             | DoubleType
+        => (i, v) => _data.update(i, v)
+        case _ => defaultUpdate
       }
     }
   }

@@ -21,8 +21,7 @@ trait UDF {
   def name: String
   def nullable: Boolean = true
   def deterministic: Boolean = true
-
-  def dataType(args: util.List[DataType]): DataType
+  def returnType(args: util.List[DataType]): DataType
 }
 
 trait UDF1[-T,+F] extends (T => F) with UDF
@@ -30,3 +29,4 @@ trait UDF2[-T1, -T2, +F] extends ((T1, T2) => F) with UDF
 trait UDF3[-T1, -T2, -T3, +F] extends ((T1, T2, T3) => F) with UDF
 trait UDF4[-T1, -T2, -T3, -T4, +F] extends ((T1, T2, T3, T4) => F) with UDF
 trait UDF5[-T1, -T2, -T3, -T4, -T5, +F] extends ((T1, T2, T3, T4, T5) => F) with UDF
+trait UDF6[-T1, -T2, -T3, -T4, -T5, -T6, +F] extends ((T1, T2, T3, T4, T5, T6) => F) with UDF

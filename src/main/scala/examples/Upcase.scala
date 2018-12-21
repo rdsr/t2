@@ -1,12 +1,14 @@
+/*
 package examples
 
 import java.util
 
 import nimble.api.UDF1
+import org.apache.spark.sql.api.java.UDF1
 import org.apache.spark.sql.types.{DataType, StringType}
 
 class Upcase {
-  val fn1: UDF1[String, String] = new UDF1[String, String] {
+  val fn1 = UDF1[String, String] {
 
     override def apply(v1: String): String = v1.toUpperCase()
 
@@ -17,3 +19,4 @@ class Upcase {
 
   val c: UDF1[String, String] = (a: String) => a
 }
+*/

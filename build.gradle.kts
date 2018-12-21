@@ -14,6 +14,7 @@ dependencies {
   implementation("org.scala-lang:scala-library:2.11.12")
   implementation("org.apache.spark:spark-core_2.11:2.3.+")
   implementation("org.apache.spark:spark-sql_2.11:2.3.+")
+  testImplementation("org.testng:testng:6.+")
 }
 
 configure<JavaPluginConvention> {
