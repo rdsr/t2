@@ -4,11 +4,7 @@ import java.util
 
 import org.apache.spark.sql.types.DataType
 
-trait Schema {
-  def dataType: DataType
-}
-
-trait IndexedRecord extends Schema {
+trait IndexedRecord {
   def put[V](i: Int, v: V): Unit
   def get[V](i: Int): V
 }
@@ -22,8 +18,8 @@ trait GenericRecord extends IndexedRecord {
 }
 
 trait UDF {
+  def name: String
   def nullable: Boolean = true
-  def foldable: Boolean = true
   def deterministic: Boolean = true
 
   def dataType(args: util.List[DataType]): DataType

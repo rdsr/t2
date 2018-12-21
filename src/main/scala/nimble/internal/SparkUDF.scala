@@ -18,9 +18,10 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
   private val _evalFn = evalFn(_children)
   private val _unWrapFn = Utils.unWrapFn(dataType)
 
-  override def foldable: Boolean = _fn.foldable
-
   override def nullable: Boolean = _fn.nullable
+
+  override def toString: String =
+    s"${_fn.name.map(name => s"UDF:$name")}(${children.mkString(", ")})"
 
   override def eval(input: InternalRow): Any = {
     val result = _evalFn(input)

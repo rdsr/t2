@@ -1,5 +1,6 @@
 package nimble.internal
 
+import nimble.internal.api.Converter
 import nimble.internal.data.{SparkList, SparkMap, SparkRecord}
 import org.apache.spark.sql.catalyst.util.ArrayData
 import org.apache.spark.sql.types._
