@@ -3,17 +3,19 @@ package nimble.internal.data
 import java.util
 import java.util.AbstractMap.SimpleEntry
 
+import nimble.api.JMap
 import nimble.internal.DataTypeWrappers
 import nimble.internal.api.SparkData
 import org.apache.spark.sql.catalyst.util.{ArrayBasedMapData, MapData}
-import org.apache.spark.sql.types.DataType
+import org.apache.spark.sql.types.{DataType, MapType}
 
 import scala.collection.mutable.Map
 
-class SparkMap[K, V](private val _keyType: DataType,
-                     private val _valueType: DataType,
-                     private val _data: MapData = null
-                    ) extends util.AbstractMap[K, V] with SparkData {
+class SparkMap[K, V](private val _mapType: MapType,
+                          private val _data: MapData = null) extends JMap[K, V] with SparkData {
+
+  private val _keyType =  _mapType.keyType
+  private val _valueType = _mapType.valueType
 
   private var _mutableMap: Map[Any, Any] = if (_data == null) createMutableMap() else null
 
@@ -52,7 +54,9 @@ class SparkMap[K, V](private val _keyType: DataType,
     r
   }
 
-  override def underlyingData: Any = ArrayBasedMapData(_mutableMap)
+  override def schema: DataType = _mapType
+
+  override def underlyingData: MapData = ArrayBasedMapData(_mutableMap)
 
   private def createMutableMap(): Map[Any, Any] = {
     val m = Map.empty[Any, Any]

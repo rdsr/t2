@@ -1,6 +1,5 @@
 package nimble.internal.data
 
-import java.util
 
 import nimble.internal.DataTypeWrappers
 import nimble.internal.api.SparkData
@@ -9,8 +8,10 @@ import org.apache.spark.sql.types._
 
 import scala.collection.mutable.ArrayBuffer
 
-class SparkList[T](private val _elementType: DataType, private val _data: ArrayData = null)
-  extends util.AbstractList[T] with SparkData {
+class SparkList[T](private val listType: ArrayType, private val _data: ArrayData = null)
+  extends nimble.api.JList[T] with SparkData {
+
+  private val _elementType = listType.elementType
 
   private var _mutableBuffer: ArrayBuffer[Any] = if (_data == null) createMutableArray() else null
 
@@ -48,20 +49,28 @@ class SparkList[T](private val _elementType: DataType, private val _data: ArrayD
     null.asInstanceOf[T]
   }
 
-  override def underlyingData: Any = {
+  override def remove(index: Int): T = {
+    if (_mutableBuffer == null)
+      _mutableBuffer = createMutableArray()
+    val e = _mutableBuffer.remove(index)
+    _wrap(e).asInstanceOf[T]
+  }
+
+  override def underlyingData: ArrayData = {
     if (_mutableBuffer == null) _data
     else ArrayData.toArrayData(_mutableBuffer)
   }
 
+  override def schema: DataType = DataTypes.createArrayType(_elementType)
+
   private def createMutableArray(): ArrayBuffer[Any] = {
-    var arrayBuffer: ArrayBuffer[Any] = null
     if (_data == null) {
-      arrayBuffer = new ArrayBuffer[Any]()
+      new ArrayBuffer[Any]()
     } else {
-      arrayBuffer = new ArrayBuffer[Any](_data.numElements())
+      val arrayBuffer = new ArrayBuffer[Any](_data.numElements())
       _data.foreach(_elementType, (_, e) => arrayBuffer.append(e))
+      arrayBuffer
     }
-    arrayBuffer
   }
 
   private def updateFn(dataType: DataType): (Int, Any) => Any = {

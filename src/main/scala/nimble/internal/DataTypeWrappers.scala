@@ -9,14 +9,14 @@ import org.apache.spark.sql.types._
 object DataTypeWrappers {
   def wrapFn[T, R](dataType: DataType): Any => Any = {
     dataType match {
-      case arrayType: ArrayType => {
-        e => new SparkList(arrayType, e.asInstanceOf[ArrayData])
+      case listType: ArrayType => {
+        e => new SparkList(listType, e.asInstanceOf[ArrayData])
       }
       case mapType: MapType => {
-        e => new SparkMap(mapType.keyType, mapType.valueType, e.asInstanceOf[MapData])
+        e => new SparkMap(mapType, e.asInstanceOf[MapData])
       }
-      case structType: StructType => {
-        e => new SparkRecord(structType, e.asInstanceOf[InternalRow])
+      case recordType: StructType => {
+        e => new SparkRecord(recordType, e.asInstanceOf[InternalRow])
       }
       // Use Catalyst converters for primitives
       case _ => CatalystTypeConverters.createToScalaConverter(dataType)
@@ -24,11 +24,8 @@ object DataTypeWrappers {
   }
 
   def unwrapFn(dataType: DataType): Any => Any = {
-    val unwrap = { e: Any => e.asInstanceOf[SparkData].underlyingData }
     dataType match {
-      case _: ArrayType => unwrap
-      case _: MapType => unwrap
-      case _: StructType => unwrap
+      case _: ArrayType | _: MapType | _: StructType => { e: Any => e.asInstanceOf[SparkData].underlyingData }
       case _ => CatalystTypeConverters.createToCatalystConverter(dataType)
     }
   }

@@ -8,25 +8,25 @@ import org.apache.spark.sql.types._
 
 import scala.collection.mutable.ArrayBuffer
 
-case class SparkRecord(private val _structType: StructType, private val _data: InternalRow = null)
-  extends GenericRecord
-    with SparkData {
+class SparkRecord(private val _recordType: StructType,
+                       private val _data: InternalRow = null)
+  extends GenericRecord with SparkData {
 
   private var _mutableBuffer = if (_data == null) createMutableStruct() else null
 
-  private val _wrapFns = _structType.fields.map(f => DataTypeWrappers.wrapFn(f.dataType))
-  private val _unwrapFns = _structType.fields.map(f => DataTypeWrappers.unwrapFn(f.dataType))
-  private val _updateFns = _structType.fields.map(f => updateFn(f.dataType))
+  private val _wrapFns = _recordType.fields.map(f => DataTypeWrappers.wrapFn(f.dataType))
+  private val _unwrapFns = _recordType.fields.map(f => DataTypeWrappers.unwrapFn(f.dataType))
+  private val _updateFns = _recordType.fields.map(f => updateFn(f.dataType))
 
   /** Set the value of a field given its name. */
   override def put[V](key: String, v: V): Unit = {
-    val i = _structType.fieldIndex(key)
+    val i = _recordType.fieldIndex(key)
     put(i, v)
   }
 
   /** Return the value of a field given its name. */
   override def get[V](key: String): V = {
-    val i = _structType.fieldIndex(key)
+    val i = _recordType.fieldIndex(key)
     get(i)
   }
 
@@ -35,7 +35,7 @@ case class SparkRecord(private val _structType: StructType, private val _data: I
   }
 
   override def get[V](i: Int): V = {
-    val f = _structType.fields(i)
+    val f = _recordType.fields(i)
     val r =
       if (_mutableBuffer == null)
         _data.get(i, f.dataType)
@@ -44,14 +44,16 @@ case class SparkRecord(private val _structType: StructType, private val _data: I
     r.asInstanceOf[V]
   }
 
-  override def underlyingData: Any = {
+  override def underlyingData: InternalRow = {
     if (_mutableBuffer == null) _data
     else InternalRow.fromSeq(_mutableBuffer)
   }
 
+  override def schema: DataType = _recordType
+
   private def createMutableStruct() = {
-    if (_data != null) ArrayBuffer[Any](_data.toSeq(_structType))
-    else ArrayBuffer.fill[Any](_structType.size)(null)
+    if (_data != null) ArrayBuffer[Any](_data.toSeq(_recordType))
+    else ArrayBuffer.fill[Any](_recordType.size)(null)
   }
 
   private def updateFn(dataType: DataType): (Int, Any) => Unit = {
