@@ -22,21 +22,21 @@ abstract class JList[A] extends util.AbstractList[A] with Schema
 
 abstract class JMap[K, V] extends util.AbstractMap[K, V] with Schema
 
-trait UDF {
+trait Fn extends Serializable {
   def name: String
   def nullable: Boolean = true
   def deterministic: Boolean = true
   def returnType(args: util.List[DataType]): DataType
 }
 
-trait UDF1[-T, +F] extends (T => F) with UDF
+trait Fn1[-T, +F] extends (T => F) with Fn
 
-trait UDF2[-T1, -T2, +F] extends ((T1, T2) => F) with UDF
+trait Fn2[-T1, -T2, +F] extends ((T1, T2) => F) with Fn
 
-trait UDF3[-T1, -T2, -T3, +F] extends ((T1, T2, T3) => F) with UDF
+trait Fn3[-T1, -T2, -T3, +F] extends ((T1, T2, T3) => F) with Fn
 
-trait UDF4[-T1, -T2, -T3, -T4, +F] extends ((T1, T2, T3, T4) => F) with UDF
+trait Fn4[-T1, -T2, -T3, -T4, +F] extends ((T1, T2, T3, T4) => F) with Fn
 
-trait UDF5[-T1, -T2, -T3, -T4, -T5, +F] extends ((T1, T2, T3, T4, T5) => F) with UDF
+trait Fn5[-T1, -T2, -T3, -T4, -T5, +F] extends ((T1, T2, T3, T4, T5) => F) with Fn
 
-trait UDF6[-T1, -T2, -T3, -T4, -T5, -T6, +F] extends ((T1, T2, T3, T4, T5, T6) => F) with UDF
+trait Fn6[-T1, -T2, -T3, -T4, -T5, -T6, +F] extends ((T1, T2, T3, T4, T5, T6) => F) with Fn

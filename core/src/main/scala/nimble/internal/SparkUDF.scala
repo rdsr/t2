@@ -1,6 +1,6 @@
 package nimble.internal
 
-import nimble.api.UDF
+import nimble.api.Fn
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.codegen.CodegenFallback
 import org.apache.spark.sql.catalyst.expressions.{Expression, NonSQLExpression}
@@ -9,7 +9,7 @@ import org.apache.spark.sql.types._
 import scala.collection.JavaConverters._
 
 
-case class SparkUDF(_fn: UDF, _children: Seq[Expression])
+case class SparkUDF(_fn: Fn, _children: Seq[Expression])
   extends Expression
     with NonSQLExpression
     with CodegenFallback {
@@ -31,7 +31,7 @@ case class SparkUDF(_fn: UDF, _children: Seq[Expression])
 
   override def children: Seq[Expression] = _children
 
-  private def evalFn(fn: UDF, children: Seq[Expression]): InternalRow => Any = {
+  private def evalFn(fn: Fn, children: Seq[Expression]): InternalRow => Any = {
     children.size match {
       case 0 =>
         val func = fn.asInstanceOf[() => Any]

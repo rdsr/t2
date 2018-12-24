@@ -12,12 +12,10 @@ class SparkList[T](private val listType: ArrayType, private val _data: ArrayData
   extends nimble.api.JList[T] with SparkData {
 
   private val _elementType = listType.elementType
-
   private var _mutableBuffer: ArrayBuffer[Any] = if (_data == null) createMutableArray() else null
-
   private val _wrap: Any => Any = DataTypeWrappers.wrapFn(_elementType)
   private val _unwrap: Any => Any = DataTypeWrappers.unwrapFn(_elementType)
-  private val _update: (Int, Any) => Any = updateFn(_elementType)
+  private val _update: (Int, Any) => Unit = updateFn(_elementType)
 
   override def get(index: Int): T = {
     val e =
@@ -73,20 +71,19 @@ class SparkList[T](private val listType: ArrayType, private val _data: ArrayData
     }
   }
 
-  private def updateFn(dataType: DataType): (Int, Any) => Any = {
-    dataType match {
-      case BooleanType
-           | ByteType
-           | ShortType
-           | IntegerType
-           | LongType
-           | FloatType
-           | DoubleType
-      => (i, v) => _data.update(i, v)
-      case _ => (i, v) => {
-        if (_mutableBuffer == null)
-          _mutableBuffer = createMutableArray()
+  private def updateFn(dataType: DataType): (Int, Any) => Unit = {
+    val bufferUpdate: (Int, Any) => Unit =
+      (i, v) => {
+        if (_mutableBuffer == null) _mutableBuffer = createMutableArray()
         _mutableBuffer(i) = _wrap(v)
+      }
+
+    if (_data == null) bufferUpdate
+    else {
+      dataType match {
+        case BooleanType | ByteType | ShortType | IntegerType | LongType | FloatType | DoubleType
+        => (i, v) => _data.update(i, v)
+        case _ => bufferUpdate
       }
     }
   }

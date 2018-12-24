@@ -1,22 +1,33 @@
-plugins {
-  java
-  scala
+buildscript {
+  repositories { jcenter() }
 }
 
-group = "rdsr"
-version = "1.0-SNAPSHOT"
-
-repositories {
-  mavenCentral()
+allprojects {
+  group = "rdsr"
+  apply(plugin = "idea")
 }
 
-dependencies {
-  implementation("org.scala-lang:scala-library:2.11.12")
-  implementation("org.apache.spark:spark-core_2.11:2.3.+")
-  implementation("org.apache.spark:spark-sql_2.11:2.3.+")
-  testImplementation("org.testng:testng:6.+")
+subprojects {
+  apply(plugin = "java")
+  apply(plugin = "scala")
+
+  repositories {
+    mavenCentral()
+  }
 }
 
-configure<JavaPluginConvention> {
-  sourceCompatibility = JavaVersion.VERSION_1_8
+project(":nimble-core") {
+  dependencies {
+    "implementation"("org.scala-lang:scala-library:2.11.12")
+    "implementation"("org.apache.spark:spark-sql_2.11:2.3.2")
+    "testImplementation"("org.testng:testng:6.+")
+  }
+}
+
+project(":nimble-examples") {
+  dependencies {
+    "implementation"("org.scala-lang:scala-library:2.11.12")
+    "implementation"("org.apache.spark:spark-sql_2.11:2.3.2")
+    "implementation"(project(":nimble-core"))
+  }
 }

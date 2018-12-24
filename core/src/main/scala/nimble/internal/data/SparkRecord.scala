@@ -9,7 +9,7 @@ import org.apache.spark.sql.types._
 import scala.collection.mutable.ArrayBuffer
 
 class SparkRecord(private val _recordType: StructType,
-                       private val _data: InternalRow = null)
+                  private val _data: InternalRow = null)
   extends GenericRecord with SparkData {
 
   private var _mutableBuffer = if (_data == null) createMutableStruct() else null
@@ -57,24 +57,18 @@ class SparkRecord(private val _recordType: StructType,
   }
 
   private def updateFn(dataType: DataType): (Int, Any) => Unit = {
-    val defaultUpdate = (i: Int, v: Any) => {
+    val bufferUpdate = (i: Int, v: Any) => {
       if (_mutableBuffer == null)
         _mutableBuffer = createMutableStruct()
       _mutableBuffer(i) = _unwrapFns(i)(v)
     }
     if (_data == null)
-      defaultUpdate
+      bufferUpdate
     else {
       dataType match {
-        case BooleanType
-             | ByteType
-             | ShortType
-             | IntegerType
-             | LongType
-             | FloatType
-             | DoubleType
+        case BooleanType | ByteType | ShortType | IntegerType | LongType | FloatType | DoubleType
         => (i, v) => _data.update(i, v)
-        case _ => defaultUpdate
+        case _ => bufferUpdate
       }
     }
   }

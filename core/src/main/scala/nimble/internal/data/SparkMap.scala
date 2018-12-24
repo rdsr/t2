@@ -12,25 +12,25 @@ import org.apache.spark.sql.types.{DataType, MapType}
 import scala.collection.mutable.Map
 
 class SparkMap[K, V](private val _mapType: MapType,
-                          private val _data: MapData = null) extends JMap[K, V] with SparkData {
+                     private val _data: MapData = null) extends JMap[K, V] with SparkData {
 
   private val _keyType =  _mapType.keyType
   private val _valueType = _mapType.valueType
 
   private var _mutableMap: Map[Any, Any] = if (_data == null) createMutableMap() else null
 
-  private val _wrapKeyFn = DataTypeWrappers.wrapFn(_keyType)
-  private val _wrapValFn = DataTypeWrappers.wrapFn(_valueType)
-  private val _unWrapKeyFn = DataTypeWrappers.unwrapFn(_keyType)
-  private val _unWrapValFn = DataTypeWrappers.unwrapFn(_valueType)
+  private val _wrapKey = DataTypeWrappers.wrapFn(_keyType)
+  private val _wrapVal = DataTypeWrappers.wrapFn(_valueType)
+  private val _unwrapKey = DataTypeWrappers.unwrapFn(_keyType)
+  private val _unwrapVal = DataTypeWrappers.unwrapFn(_valueType)
 
 
   override def put(key: K, value: V): V = {
     if (_mutableMap == null)
       _mutableMap = createMutableMap()
-    val previousValue = _mutableMap.put(_unWrapKeyFn(key), _unWrapValFn(value))
+    val previousValue = _mutableMap.put(_unwrapKey(key), _unwrapVal(value))
     previousValue
-      .map(_unWrapValFn)
+      .map(_unwrapVal)
       .orNull
       .asInstanceOf[V]
   }
@@ -38,8 +38,8 @@ class SparkMap[K, V](private val _mapType: MapType,
   override def get(key: Any): V = {
     if (_mutableMap == null)
       _mutableMap = createMutableMap()
-    _mutableMap.get(_wrapKeyFn(key))
-      .map(_wrapValFn)
+    _mutableMap.get(_wrapKey(key))
+      .map(_wrapVal)
       .orNull
       .asInstanceOf[V]
   }
