@@ -14,17 +14,17 @@ case class SparkUDF(_fn: Fn, _children: Seq[Expression])
     with NonSQLExpression
     with CodegenFallback {
 
-  private val _evalFn = evalFn(_fn, _children)
-  private val _unwrapFn = DataTypeWrappers.unwrapFn(dataType)
+  private lazy val _eval = evalFn(_fn, _children)
+  private lazy val _unwrap = DataTypeWrappers.unwrapFn(dataType)
 
   override def nullable: Boolean = _fn.nullable
 
   override def toString: String =
-    s"${_fn.name.map(name => s"UDF:$name")}(${children.mkString(", ")})"
+    s"UDF:${_fn.name}(${children.mkString(", ")})"
 
   override def eval(input: InternalRow): Any = {
-    val result = _evalFn(input)
-    _unwrapFn(result)
+    val result = _eval(input)
+    _unwrap(result)
   }
 
   override def dataType: DataType = _fn.returnType(_children.map(_.dataType).asJava)

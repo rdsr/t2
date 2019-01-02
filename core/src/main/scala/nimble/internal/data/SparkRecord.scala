@@ -2,7 +2,7 @@ package nimble.internal.data
 
 import nimble.api.GenericRecord
 import nimble.internal.DataTypeWrappers
-import nimble.internal.api.SparkData
+import nimble.internal.api.SparkDataTypes
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.types._
 
@@ -10,8 +10,10 @@ import scala.collection.mutable.ArrayBuffer
 
 class SparkRecord(private val _recordType: StructType,
                   private val _data: InternalRow = null)
-  extends GenericRecord with SparkData {
+  extends GenericRecord with SparkDataTypes {
 
+  // _data and _mutableBuffer cannot both be null
+  // if _mutableBuffer is non-null, that is the source of truth
   private var _mutableBuffer = if (_data == null) createMutableStruct() else null
 
   private val _wrapFns = _recordType.fields.map(f => DataTypeWrappers.wrapFn(f.dataType))
@@ -44,7 +46,7 @@ class SparkRecord(private val _recordType: StructType,
     r.asInstanceOf[V]
   }
 
-  override def underlyingData: InternalRow = {
+  override def underlyingDataType: InternalRow = {
     if (_mutableBuffer == null) _data
     else InternalRow.fromSeq(_mutableBuffer)
   }
@@ -58,12 +60,14 @@ class SparkRecord(private val _recordType: StructType,
 
   private def updateFn(dataType: DataType): (Int, Any) => Unit = {
     val bufferUpdate = (i: Int, v: Any) => {
-      if (_mutableBuffer == null)
+      if (_mutableBuffer == null) {
         _mutableBuffer = createMutableStruct()
+      }
       _mutableBuffer(i) = _unwrapFns(i)(v)
     }
-    if (_data == null)
+    if (_data == null) {
       bufferUpdate
+    }
     else {
       dataType match {
         case BooleanType | ByteType | ShortType | IntegerType | LongType | FloatType | DoubleType

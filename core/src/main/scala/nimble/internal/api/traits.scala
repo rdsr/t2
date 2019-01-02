@@ -1,5 +1,5 @@
 package nimble.internal.api
 
-trait SparkData {
-  def underlyingData: Any
+trait SparkDataTypes {
+  def underlyingDataType: Any
 }

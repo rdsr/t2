@@ -3,8 +3,8 @@ package nimble
 import java.sql.Timestamp
 import java.util.Date
 
-import nimble.api.DataFactory
-import nimble.internal.api.SparkData
+import nimble.api.SparkDataTypes
+import nimble.internal.api.SparkDataTypes
 import org.apache.spark.sql.types._
 
 object Generator {
@@ -12,7 +12,7 @@ object Generator {
   private val _maxSize = 10
 
   def genList(listType: ArrayType): Any = {
-    val r = DataFactory.emptyList[Any](listType)
+    val r = SparkDataTypes.emptyList[Any](listType)
     val size = _rand.nextInt(_maxSize)
     (0 to size) foreach {
       _ => r.add(genData(listType))
@@ -21,7 +21,7 @@ object Generator {
   }
 
   def genMap(mapType: MapType): Any = {
-    val r = DataFactory.emptyMap[Any, Any](mapType)
+    val r = SparkDataTypes.emptyMap[Any, Any](mapType)
     val size = _rand.nextInt(_maxSize)
     val keyType = mapType.keyType
     val valueType = mapType.valueType
@@ -32,7 +32,7 @@ object Generator {
   }
 
   def genRecord(recordType: StructType): Any = {
-    val r = DataFactory.emptyRecord(recordType)
+    val r = SparkDataTypes.emptyRecord(recordType)
     recordType.fields.zipWithIndex.foreach { case (f, i) => r.put(i, genData(f.dataType)) }
     r
   }

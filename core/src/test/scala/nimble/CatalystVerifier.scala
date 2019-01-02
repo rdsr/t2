@@ -1,7 +1,7 @@
 package nimble
 
 import nimble.api.{GenericRecord, Schema}
-import nimble.internal.api.SparkData
+import nimble.internal.api.SparkDataTypes
 import nimble.internal.data.{SparkList, SparkMap, SparkRecord}
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.util.{ArrayData, MapData}

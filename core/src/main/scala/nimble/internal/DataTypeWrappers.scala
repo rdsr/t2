@@ -1,6 +1,6 @@
 package nimble.internal
 
-import nimble.internal.api.SparkData
+import nimble.internal.api.SparkDataTypes
 import nimble.internal.data.{SparkList, SparkMap, SparkRecord}
 import org.apache.spark.sql.catalyst.util.{ArrayData, MapData}
 import org.apache.spark.sql.catalyst.{CatalystTypeConverters, InternalRow}
@@ -9,15 +9,12 @@ import org.apache.spark.sql.types._
 object DataTypeWrappers {
   def wrapFn[T, R](dataType: DataType): Any => Any = {
     dataType match {
-      case listType: ArrayType => {
+      case listType: ArrayType =>
         e => new SparkList(listType, e.asInstanceOf[ArrayData])
-      }
-      case mapType: MapType => {
+      case mapType: MapType =>
         e => new SparkMap(mapType, e.asInstanceOf[MapData])
-      }
-      case recordType: StructType => {
+      case recordType: StructType =>
         e => new SparkRecord(recordType, e.asInstanceOf[InternalRow])
-      }
       // Use Catalyst converters for primitives
       case _ => CatalystTypeConverters.createToScalaConverter(dataType)
     }
@@ -25,7 +22,12 @@ object DataTypeWrappers {
 
   def unwrapFn(dataType: DataType): Any => Any = {
     dataType match {
-      case _: ArrayType | _: MapType | _: StructType => { e: Any => e.asInstanceOf[SparkData].underlyingData }
+      case
+        _: ArrayType |
+        _: MapType |
+        _: StructType => {
+        e: Any => e.asInstanceOf[SparkDataTypes].underlyingDataType
+      }
       case _ => CatalystTypeConverters.createToCatalystConverter(dataType)
     }
   }

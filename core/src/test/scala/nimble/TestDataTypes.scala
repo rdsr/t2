@@ -1,7 +1,7 @@
 package nimble
 
 import com.google.common.collect.ImmutableList
-import nimble.internal.api.SparkData
+import nimble.internal.api.SparkDataTypes
 import org.apache.spark.sql.types.DataTypes._
 import org.apache.spark.sql.types._
 import org.testng.annotations.Test
@@ -20,7 +20,7 @@ class TestDataTypes {
         createStructField("a", DataTypes.StringType, true),
         createStructField("b", DataTypes.IntegerType, true)))
     val r = Generator.genData(dt)
-    CatalystVerifier.verify(r.asInstanceOf[SparkData].underlyingData, dt)
+    CatalystVerifier.verify(r.asInstanceOf[SparkDataTypes].underlyingDataType, dt)
     /*
     val listOfInts = DataFactory.emptyList[Int](IntegerType)
     listOfInts.add(1)

@@ -2,17 +2,18 @@ package nimble.internal.data
 
 
 import nimble.internal.DataTypeWrappers
-import nimble.internal.api.SparkData
+import nimble.internal.api.SparkDataTypes
 import org.apache.spark.sql.catalyst.util.ArrayData
 import org.apache.spark.sql.types._
 
 import scala.collection.mutable.ArrayBuffer
 
-class SparkList[T](private val listType: ArrayType, private val _data: ArrayData = null)
-  extends nimble.api.JList[T] with SparkData {
+class SparkList[T](private val _listType: ArrayType, private val _data: ArrayData = null)
+  extends nimble.api.GenericList[T] with SparkDataTypes {
 
-  private val _elementType = listType.elementType
-  private var _mutableBuffer: ArrayBuffer[Any] = if (_data == null) createMutableArray() else null
+  private val _elementType = _listType.elementType
+  private var _mutableBuffer = if (_data == null) createMutableArray() else null
+
   private val _wrap: Any => Any = DataTypeWrappers.wrapFn(_elementType)
   private val _unwrap: Any => Any = DataTypeWrappers.unwrapFn(_elementType)
   private val _update: (Int, Any) => Unit = updateFn(_elementType)
@@ -54,7 +55,7 @@ class SparkList[T](private val listType: ArrayType, private val _data: ArrayData
     _wrap(e).asInstanceOf[T]
   }
 
-  override def underlyingData: ArrayData = {
+  override def underlyingDataType: ArrayData = {
     if (_mutableBuffer == null) _data
     else ArrayData.toArrayData(_mutableBuffer)
   }
