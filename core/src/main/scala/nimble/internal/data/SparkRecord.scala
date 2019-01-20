@@ -2,7 +2,7 @@ package nimble.internal.data
 
 import nimble.api.GenericRecord
 import nimble.internal.DataTypeWrappers
-import nimble.internal.api.SparkDataTypes
+import nimble.internal.api.SparkDataType
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.types._
 
@@ -10,7 +10,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class SparkRecord(private val _recordType: StructType,
                   private val _data: InternalRow = null)
-  extends GenericRecord with SparkDataTypes {
+  extends GenericRecord with SparkDataType {
 
   // _data and _mutableBuffer cannot both be null
   // if _mutableBuffer is non-null, that is the source of truth
@@ -46,7 +46,7 @@ class SparkRecord(private val _recordType: StructType,
     r.asInstanceOf[V]
   }
 
-  override def underlyingDataType: InternalRow = {
+  override def underlyingType: InternalRow = {
     if (_mutableBuffer == null) _data
     else InternalRow.fromSeq(_mutableBuffer)
   }
@@ -70,8 +70,13 @@ class SparkRecord(private val _recordType: StructType,
     }
     else {
       dataType match {
-        case BooleanType | ByteType | ShortType | IntegerType | LongType | FloatType | DoubleType
-        => (i, v) => _data.update(i, v)
+        case BooleanType => (i, v) => _data.setBoolean(i, v.asInstanceOf[Boolean])
+        case ByteType => (i, v) => _data.setByte(i, v.asInstanceOf[Byte])
+        case ShortType => (i, v) => _data.setShort(i, v.asInstanceOf[Short])
+        case IntegerType => (i, v) => _data.setInt(i, v.asInstanceOf[Integer])
+        case LongType => (i, v) => _data.setLong(i, v.asInstanceOf[Long])
+        case FloatType => (i, v) => _data.setFloat(i, v.asInstanceOf[Float])
+        case DoubleType => (i, v) => _data.setDouble(i, v.asInstanceOf[Double])
         case _ => bufferUpdate
       }
     }

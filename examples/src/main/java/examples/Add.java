@@ -6,11 +6,13 @@ import org.apache.spark.sql.types.DataTypes;
 
 import java.util.List;
 
-public class NumericAddInteger implements Fn2<Integer, Integer, Integer> {
+
+public class Add implements Fn2<Integer, Integer, Integer> {
   @Override
   public String name() {
-    return "Numeric Add";
+    return "Add";
   }
+
 
   @Override
   public Integer call(Integer v1, Integer v2) {
@@ -18,7 +20,7 @@ public class NumericAddInteger implements Fn2<Integer, Integer, Integer> {
   }
 
   @Override
-  public DataType returnType(List<DataType> ignore) {
+  public DataType returnType(List<DataType> ignored) {
     return DataTypes.IntegerType;
   }
 }
