@@ -2,7 +2,7 @@ package nimble.internal.data
 
 import nimble.api.GenericRecord
 import nimble.internal.DataTypeWrappers
-import nimble.internal.api.SparkDataTypes
+import nimble.internal.api.SparkDataType
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.types._
 
@@ -10,7 +10,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class SparkRecord(private val _recordType: StructType,
                   private val _data: InternalRow = null)
-  extends GenericRecord with SparkDataTypes {
+  extends GenericRecord with SparkDataType {
 
   // _data and _mutableBuffer cannot both be null
   // if _mutableBuffer is non-null, that is the source of truth
@@ -46,7 +46,7 @@ class SparkRecord(private val _recordType: StructType,
     r.asInstanceOf[V]
   }
 
-  override def underlyingDataType: InternalRow = {
+  override def underlyingType: InternalRow = {
     if (_mutableBuffer == null) _data
     else InternalRow.fromSeq(_mutableBuffer)
   }
