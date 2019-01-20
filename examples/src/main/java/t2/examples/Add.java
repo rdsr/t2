@@ -1,15 +1,16 @@
-package examples;
+package t2.examples;
 
-import nimble.api.Fn2;
+import t2.api.Fn2;
 import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.DataTypes;
 
 import java.util.List;
 
-public class NumericAddInteger implements Fn2<Integer, Integer, Integer> {
+
+public class Add implements Fn2<Integer, Integer, Integer> {
   @Override
   public String name() {
-    return "Numeric Add";
+    return "Add";
   }
 
   @Override
@@ -18,7 +19,7 @@ public class NumericAddInteger implements Fn2<Integer, Integer, Integer> {
   }
 
   @Override
-  public DataType returnType(List<DataType> ignore) {
+  public DataType returnType(List<DataType> ignored) {
     return DataTypes.IntegerType;
   }
 }

@@ -5,7 +5,6 @@ import java.util
 import org.apache.spark.sql.api.java._
 import org.apache.spark.sql.types.DataType
 
-
 trait Schema {
   def schema: DataType
 }
@@ -25,6 +24,8 @@ trait GenericRecord extends IndexedRecord {
 abstract class GenericList[A] extends util.AbstractList[A] with Schema
 
 abstract class GenericMap[K, V] extends util.AbstractMap[K, V] with Schema
+
+trait Fn0[F] extends UDF0[F] with Fn
 
 trait Fn1[T, F] extends UDF1[T, F] with Fn
 
