@@ -1,3 +1,7 @@
+# T2 - A better UDF API for Spark SQL
+
+Currently in alpha state
+
 https://issues.apache.org/jira/browse/SPARK-23818
 
 compare with transport
