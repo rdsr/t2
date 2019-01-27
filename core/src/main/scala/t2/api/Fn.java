@@ -1,4 +1,4 @@
-package nimble.api;
+package t2.api;
 
 import org.apache.spark.sql.types.DataType;
 

@@ -1,7 +1,7 @@
-package nimble.internal
+package t2.internal
 
-import nimble.internal.api.SparkDataType
-import nimble.internal.data.{SparkList, SparkMap, SparkRecord}
+import t2.internal.api.SparkDataType
+import t2.internal.data.{SparkList, SparkMap, SparkRecord}
 import org.apache.spark.sql.catalyst.util.{ArrayData, MapData}
 import org.apache.spark.sql.catalyst.{CatalystTypeConverters, InternalRow}
 import org.apache.spark.sql.types._

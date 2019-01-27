@@ -1,7 +1,7 @@
-package nimble.examples
+package t2.examples
 
 import examples.{Add, MapValuesFunction}
-import nimble.api.FnRegistration
+import t2.api.FnRegistration
 import org.apache.spark.sql.SparkSession
 
 object SparkTest {

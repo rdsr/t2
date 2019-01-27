@@ -1,9 +1,9 @@
-package nimble.examples
+package t2.examples
 
 import java.util
 
-import nimble.api.Fn1
-import nimble.internal.SparkUDF
+import t2.api.Fn1
+import t2.internal.SparkUDF
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.expressions.codegen.CodegenFallback

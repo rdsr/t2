@@ -1,8 +1,8 @@
-package nimble.internal
+package t2.internal
 
 import java.util
 
-import nimble.api.Fn
+import t2.api.Fn
 import org.apache.spark.sql.api.java._
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.codegen.CodegenFallback

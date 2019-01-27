@@ -1,6 +1,6 @@
-package nimble.examples
+package t2.examples
 
-import nimble.api.{Fn1, FnRegistration, GenericRecord}
+import t2.api.{Fn1, FnRegistration, GenericRecord}
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types._
 

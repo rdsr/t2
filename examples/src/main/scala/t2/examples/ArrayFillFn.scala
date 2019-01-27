@@ -1,8 +1,8 @@
-package nimble.examples
+package t2.examples
 
 import java.util
 
-import nimble.api.{DataTypeFactory, Fn2}
+import t2.api.{DataTypeFactory, Fn2}
 import org.apache.spark.sql.types.{ArrayType, DataType}
 
 

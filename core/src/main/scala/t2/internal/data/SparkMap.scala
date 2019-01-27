@@ -1,12 +1,12 @@
-package nimble.internal.data
+package t2.internal.data
 
 import java.util
 import java.util.AbstractMap.SimpleEntry
 import java.util.Map.Entry
 
-import nimble.api.GenericMap
-import nimble.internal.DataTypeWrappers
-import nimble.internal.api.SparkDataType
+import t2.api.GenericMap
+import t2.internal.DataTypeWrappers
+import t2.internal.api.SparkDataType
 import org.apache.spark.sql.catalyst.util.{ArrayBasedMapData, MapData}
 import org.apache.spark.sql.types.{DataType, MapType}
 

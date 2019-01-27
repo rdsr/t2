@@ -1,5 +1,5 @@
-package nimble.api
-import nimble.internal.data.{SparkList, SparkMap, SparkRecord}
+package t2.api
+import t2.internal.data.{SparkList, SparkMap, SparkRecord}
 import org.apache.spark.sql.types._
 
 object DataTypeFactory {

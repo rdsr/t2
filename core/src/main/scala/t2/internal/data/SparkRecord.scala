@@ -1,8 +1,8 @@
-package nimble.internal.data
+package t2.internal.data
 
-import nimble.api.GenericRecord
-import nimble.internal.DataTypeWrappers
-import nimble.internal.api.SparkDataType
+import t2.api.GenericRecord
+import t2.internal.DataTypeWrappers
+import t2.internal.api.SparkDataType
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.types._
 

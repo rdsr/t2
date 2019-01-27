@@ -2,7 +2,7 @@ package examples
 
 import java.util
 
-import nimble.api.Fn1
+import t2.api.Fn1
 import org.apache.spark.sql.types.{DataType, StringType}
 
 class Upcase {

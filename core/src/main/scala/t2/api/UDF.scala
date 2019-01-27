@@ -1,6 +1,6 @@
-package nimble.api
+package t2.api
 
-import nimble.internal.SparkUDF
+import t2.internal.SparkUDF
 import org.apache.spark.sql.Column
 
 case class UDF(fn: Fn) {
