@@ -1,6 +1,5 @@
 package t2.examples
 
-import examples.{Add, MapValuesFunction}
 import t2.api.FnRegistration
 import org.apache.spark.sql.SparkSession
 
