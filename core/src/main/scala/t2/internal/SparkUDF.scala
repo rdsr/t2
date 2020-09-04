@@ -1,13 +1,11 @@
 package t2.internal
 
-import java.util
-
-import t2.api.Fn
 import org.apache.spark.sql.api.java._
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.codegen.CodegenFallback
 import org.apache.spark.sql.catalyst.expressions.{Expression, NonSQLExpression}
 import org.apache.spark.sql.types._
+import t2.api.Fn
 
 import scala.collection.JavaConverters._
 
@@ -30,7 +28,6 @@ case class SparkUDF(_fn: Fn, _children: Seq[Expression])
   override def eval(input: InternalRow): Any = {
     val result = _eval(input)
     _unwrap(result)
-
   }
 
   override def dataType: DataType = _fn.returnType(_children.map(_.dataType).asJava)

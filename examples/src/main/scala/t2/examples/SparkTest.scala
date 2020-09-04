@@ -28,7 +28,7 @@ object SparkTest {
   def testAdd(): Unit = {
     val spark = SparkSession.builder().getOrCreate()
     import spark.implicits._
-    val df = Seq.fill(10000000)(10).toDF("c")
+    val df = Seq.fill(1000000)(10).toDF("c")
 
     FnRegistration.register(spark, new Add())
     df.createOrReplaceTempView("v")
@@ -54,8 +54,8 @@ object SparkTest {
 
   def main(args: Array[String]): Unit = {
     sparkSession()
-    //testAdd()
-    testArrayFill()
+    testAdd()
+    //testArrayFill()
     //testMapValues(sparkSession())
   }
 }

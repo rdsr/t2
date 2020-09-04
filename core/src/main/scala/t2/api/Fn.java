@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * We cannot directly use Scala trait with default methods in Java classes
+ * Java classes cannot directly extend Scala trait with default methods
  * See: https://alvinalexander.com/scala/how-to-wrap-scala-traits-used-accessed-java-classes-methods
  */
 public interface Fn extends Serializable {

@@ -1,14 +1,12 @@
 package t2.examples;
 
 import com.google.common.collect.ImmutableList;
-import t2.api.DataTypeFactory;
-import t2.api.Fn4;
-import t2.api.GenericRecord;
+import java.util.List;
 import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructType;
-
-import java.util.List;
+import t2.api.Fn4;
+import t2.api.GenericRecord;
 
 public class StructCreateByName<V1, V2> implements Fn4<String, V1, String, V2, GenericRecord> {
   private StructType _returnType;
@@ -18,7 +16,10 @@ public class StructCreateByName<V1, V2> implements Fn4<String, V1, String, V2, G
   }
 
   public GenericRecord call(String k1, V1 v1, String k2, V2 v2) {
-    final GenericRecord r = DataTypeFactory.record(_returnType);
+
+    final GenericRecord r = ...
+    final List<Integer> f = r.get("A");
+
     r.put(k1, v1);
     r.put(k2, v2);
     return r;
